@@ -113,7 +113,7 @@ const PODCAST_PLAYLIST = [
     sourceNames: "NPR,NYT,Guardian,Vox",
     gradient: "from-teal-400 to-cyan-600",
     image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=150",
-    audioSrc: "podcasts/Why a classic book still confuses adults who swear they 'got it' in school.mp3",
+    audioSrc: "podcasts/Why a classic book still confuses adults who swear they got it in school.mp3",
     detailedSources: [
       { name: "NPR", logo: "publisher icon/NPR.png", article: "Classic Literature: What We Miss in School", time: "1h ago" },
       { name: "NYT", logo: "publisher icon/NYT.png", article: "Rereading Classics as Adults: New Perspectives", time: "2h ago" },

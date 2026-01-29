@@ -289,7 +289,7 @@
       
       <!-- Progress Bar -->
       <div class="mb-3">
-        <input type="range" class="audio-progress" value="35" min="0" max="100">
+        <input type="range" class="audio-progress" value="0" min="0" max="100">
         <div class="flex justify-between mt-1">
           <span id="currentTime" class="text-2xs text-foreground-800">0:00</span>
           <span id="totalTime" class="text-2xs text-foreground-800">--:--</span>
@@ -337,7 +337,7 @@
       </header>
 
       <!-- Article Content -->
-      <article class="article-content px-4 pb-40">
+      <article class="article-content px-4 pb-60">
         <!-- Article Title -->
         <h1 id="articleTitle" class="text-xl-medium text-foreground-800 mt-6 mb-4"></h1>
 
@@ -602,8 +602,35 @@
       }
 
       bindEvents() {
-        this.prevBtn.addEventListener('click', () => this.playPrevious());
-        this.nextBtn.addEventListener('click', () => this.playNext());
+        this.prevBtn.addEventListener('click', (e) => {
+          if (this.prevBtn.classList.contains('btn-disabled')) return;
+          this.temporarilyDisableButtons();
+          this.playPrevious();
+        });
+        this.nextBtn.addEventListener('click', (e) => {
+          if (this.nextBtn.classList.contains('btn-disabled')) return;
+          this.temporarilyDisableButtons();
+          this.playNext();
+        });
+      }
+      
+      // Disable buttons for a fixed duration to prevent rapid clicking
+      temporarilyDisableButtons() {
+        this.prevBtn.classList.add('btn-disabled');
+        this.nextBtn.classList.add('btn-disabled');
+        this.prevBtn.style.pointerEvents = 'none';
+        this.nextBtn.style.pointerEvents = 'none';
+        this.prevBtn.style.opacity = '0.5';
+        this.nextBtn.style.opacity = '0.5';
+        
+        setTimeout(() => {
+          this.prevBtn.classList.remove('btn-disabled');
+          this.nextBtn.classList.remove('btn-disabled');
+          this.prevBtn.style.pointerEvents = '';
+          this.nextBtn.style.pointerEvents = '';
+          this.prevBtn.style.opacity = '';
+          this.nextBtn.style.opacity = '';
+        }, 600);
       }
 
       getNextFromFeed() {
