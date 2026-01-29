@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Copilot Podcast</title>
+  <!-- Load playlist data -->
+  <script src="podcast-data.js"></script>
+  <script src="article-content.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            foreground: {
+              100: 'var(--foreground-100)',
+              200: 'var(--foreground-200)',
+              250: 'var(--foreground-250)',
+              300: 'var(--foreground-300)',
+              450: 'var(--foreground-450)',
+              550: 'var(--foreground-550)',
+              600: 'var(--foreground-600)',
+              700: 'var(--foreground-700)',
+              800: 'var(--foreground-800)',
+              900: 'var(--foreground-900)',
+            },
+            background: {
+              100: 'var(--background-100)',
+              150: 'var(--background-150)',
+              200: 'var(--background-200)',
+              250: 'var(--background-250)',
+              300: 'var(--background-300)',
+            },
+            accent: {
+              200: 'var(--accent-200)',
+              250: 'var(--accent-250)',
+              300: 'var(--accent-300)',
+              400: 'var(--accent-400)',
+              500: 'var(--accent-500)',
+              550: 'var(--accent-550)',
+              600: 'var(--accent-600)',
+            },
+            muted: {
+              200: 'var(--muted-200)',
+              300: 'var(--muted-300)',
+            },
+            stroke: {
+              300: 'var(--stroke-300)',
+              450: 'var(--stroke-450)',
+            },
+          },
+          borderRadius: {
+            '3xl': '1.25rem',
+            '4xl': '1.5rem',
+            '5xl': '1.75rem',
+            '6xl': '2rem',
+          },
+        },
+      },
+    }
+  </script>
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="podcast-mobile.css">
+  <style>
+    /* Any page-specific overrides can go here */
+
+  </style>
+</head>
+<body class="text-foreground-800 min-h-screen no-scroll">
+  
+  <!-- Welcome Page -->
+  <div id="welcomePage" class="welcome-page">
+    <div class="flex-1 flex flex-col px-6 safe-top">
+      
+      <!-- Header & Welcome - Centered -->
+      <div class="flex-1 flex flex-col items-center justify-center text-center">
+        <!-- Logo -->
+        <div class="mb-4">
+          <div class="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center mx-auto">
+            <img src="assets/Microsoft_Copilot_Icon.svg.png" alt="Copilot" class="w-full h-full object-cover">
+          </div>
+        </div>
+        
+        <!-- Title -->
+        <h1 class="text-3xl font-semibold text-foreground-800 mb-6">Copilot Podcast</h1>
+
+        <!-- Welcome Message -->
+        <div class="mb-8">
+          <p id="currentDate" class="text-foreground-450 text-base mb-2"></p>
+        </div>
+
+        <!-- Today's Topics -->
+        <div class="w-full max-w-sm">
+          <h3 class="text-sm-medium text-foreground-600 mb-4">Here's what we will cover today</h3>
+          
+          <div class="flex flex-wrap gap-2 justify-center">
+            <span class="topic-tag px-3 py-1.5 rounded-xl bg-cyan-100 text-cyan-700 text-xs font-normal" style="animation-delay: 0.1s;">🦈 Australia Beach Alert</span>
+            <span class="topic-tag px-3 py-1.5 rounded-xl bg-green-100 text-green-700 text-xs font-normal" style="animation-delay: 0.2s;">📈 Indian Markets Rally</span>
+            <span class="topic-tag px-3 py-1.5 rounded-xl bg-purple-100 text-purple-700 text-xs font-normal" style="animation-delay: 0.3s;">🤖 AI & UK Jobs</span>
+            <span class="topic-tag px-3 py-1.5 rounded-xl bg-red-100 text-red-700 text-xs font-normal" style="animation-delay: 0.4s;">✈️ Maine Plane Crash</span>
+            <span class="topic-tag px-3 py-1.5 rounded-xl bg-amber-100 text-amber-700 text-xs font-normal" style="animation-delay: 0.5s;">🚔 Border Patrol Incident</span>
+            <span class="topic-tag px-3 py-1.5 rounded-xl bg-pink-100 text-pink-700 text-xs font-normal" style="animation-delay: 0.6s;">💬 Celebrity Health Talk</span>
+            <span class="topic-tag px-3 py-1.5 rounded-xl bg-teal-100 text-teal-700 text-xs font-normal" style="animation-delay: 0.7s;">📚 Classic Books Revisited</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start Button -->
+      <div class="w-full max-w-sm mx-auto mt-8 mb-6">
+        <button id="startBtn" class="w-full py-4 rounded-4xl bg-foreground-800 text-white text-base-medium shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-2 transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 3l14 9-14 9V3z"/>
+          </svg>
+          Play Podcast
+        </button>
+      </div>
+
+      <!-- Bottom Navigation Bar -->
+      <div class="pb-4 safe-bottom">
+        <!-- Navigation Icons -->
+        <div class="flex items-center justify-between gap-3">
+          <!-- Menu Button - Separate Circle -->
+          <div class="nav-btn p-3 bg-background-100 rounded-full shadow-sm text-foreground-800 cursor-default">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </div>
+          
+          <!-- Center Tab Group - 3 tabs in one pill -->
+          <div class="flex-1 flex items-center bg-background-100 rounded-full p-1.5 shadow-sm">
+            <!-- Home -->
+            <div class="nav-tab flex-1 py-2.5 rounded-full text-foreground-450 flex justify-center cursor-default">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+            </div>
+            
+            <!-- Compass / Discover -->
+            <div class="nav-tab flex-1 py-2.5 rounded-full text-foreground-450 flex justify-center cursor-default">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor"/>
+              </svg>
+            </div>
+            
+            <!-- Podcast - Tab 3 (Selected) -->
+            <div class="nav-tab flex-1 py-2.5 rounded-full bg-background-200 shadow-sm text-foreground-800 flex justify-center cursor-default">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 512 512">
+                <!-- Sound wave bars -->
+                <rect x="56" y="176" width="24" height="160" rx="12"/>
+                <rect x="136" y="96" width="24" height="320" rx="12"/>
+                <rect x="216" y="56" width="24" height="400" rx="12"/>
+                <rect x="296" y="96" width="24" height="320" rx="12"/>
+                <rect x="376" y="136" width="24" height="240" rx="12"/>
+                <rect x="432" y="196" width="24" height="120" rx="12"/>
+              </svg>
+            </div>
+          </div>
+          
+          <!-- New/Edit Button - Separate Circle -->
+          <div class="nav-btn p-3 bg-background-100 rounded-full shadow-sm text-foreground-800 cursor-default">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Container -->
+  <div id="mainApp" class="main-app min-h-screen flex flex-col">
+    
+    <!-- Header -->
+    <header class="sticky top-0 z-50 safe-top">
+      <div class="px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl overflow-hidden flex items-center justify-center">
+            <img src="assets/Microsoft_Copilot_Icon.svg.png" alt="Copilot" class="w-full h-full object-cover">
+          </div>
+          <h1 class="text-lg-medium text-foreground-800">Copilot Podcast</h1>
+        </div>
+        <button id="closeAppBtn" class="p-2 bg-background-100 rounded-full shadow-sm text-foreground-800 active:scale-95 transition-all">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto hide-scrollbar pb-32">
+    
+    <!-- Completed Episodes Section -->
+    <section id="completedSection" class="completed-section px-4 pt-2">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-md-medium text-foreground-800">Completed</span>
+      </div>
+      <div id="completedList" class="space-y-2 mb-4">
+        <!-- Completed items will be inserted here -->
+      </div>
+    </section>
+
+    <!-- Now Playing Section (Queue Item Style) -->
+    <section class="px-4 pt-2 pb-4">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="sound-wave-indicator flex items-end gap-[2px] h-3">
+          <span class="wave-bar w-[3px] bg-accent-500 rounded-full"></span>
+          <span class="wave-bar w-[3px] bg-accent-500 rounded-full"></span>
+          <span class="wave-bar w-[3px] bg-accent-500 rounded-full"></span>
+        </div>
+        <span class="text-xs-medium text-accent-550">Now Playing</span>
+      </div>
+      
+      <div id="playerCard" class="now-playing-card bg-background-100 rounded-2xl overflow-hidden shadow-sm">
+        <div id="playerContent" class="player-content">
+          <!-- Episode Info Row -->
+          <div class="flex gap-3 p-3">
+            <!-- Thumbnail -->
+            <div id="playerThumbnail" class="flex-shrink-0 w-[70px] h-[70px] rounded-xl overflow-hidden shadow-sm">
+              <!-- Initialized by JS -->
+            </div>
+            
+            <!-- Info -->
+            <div class="flex-1 min-w-0">
+              <h2 id="playerTitle" class="text-sm-medium text-foreground-800 line-clamp-2 mb-1"></h2>
+              <div class="flex items-center gap-2 text-xs text-foreground-450">
+                <span id="playerCategory" class="px-1.5 py-0.5 rounded bg-muted-200 text-foreground-550 text-2xs"></span>
+                <span>•</span>
+                <span id="playerDuration"></span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Source Articles -->
+          <div id="playerSources" class="border-t border-foreground-200 px-3 py-3">
+            <!-- Initialized by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feed Section -->
+    <section class="px-4 pb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-md-medium text-foreground-800">Up Next</h3>
+      </div>
+
+      <!-- Feed List - Dynamically rendered from podcast-data.js -->
+      <div class="space-y-3" id="feedList">
+        <!-- Items will be rendered by JavaScript -->
+      </div>
+
+      <!-- Load More Indicator -->
+      <div id="loadMoreIndicator" class="mt-6 flex flex-col items-center gap-2 py-4 mb-32">
+        <div class="flex gap-1">
+          <div class="w-2 h-2 rounded-full bg-foreground-300 animate-bounce" style="animation-delay: 0ms;"></div>
+          <div class="w-2 h-2 rounded-full bg-foreground-300 animate-bounce" style="animation-delay: 150ms;"></div>
+          <div class="w-2 h-2 rounded-full bg-foreground-300 animate-bounce" style="animation-delay: 300ms;"></div>
+        </div>
+        <span class="text-xs text-foreground-450">Loading more podcasts...</span>
+      </div>
+    </section>
+
+    </main>
+  </div>
+  
+  <!-- Fixed Bottom Control Bar (outside mainApp for proper fixed positioning) -->
+  <div id="controlBar" class="control-bar fixed bottom-0 left-0 right-0 border-t border-foreground-200 safe-bottom z-50">
+    <div class="px-4 pt-3 pb-2">
+      <!-- Mini Player Info -->
+      <div class="flex items-center gap-3 mb-3">
+        <div id="miniThumbnail" class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 shadow-sm">
+          <!-- Initialized by JS -->
+        </div>
+        <div class="flex-1 min-w-0">
+          <p id="miniTitle" class="text-sm-medium text-foreground-800 line-clamp-1"></p>
+          <p id="miniCategory" class="text-2xs text-foreground-800"></p>
+        </div>
+      </div>
+      
+      <!-- Progress Bar -->
+      <div class="mb-3">
+        <input type="range" class="audio-progress" value="35" min="0" max="100">
+        <div class="flex justify-between mt-1">
+          <span id="currentTime" class="text-2xs text-foreground-800">0:00</span>
+          <span id="totalTime" class="text-2xs text-foreground-800">--:--</span>
+        </div>
+      </div>
+      
+      <!-- Playback Controls -->
+      <div class="flex items-center justify-center gap-8">
+        <button id="prevBtn" class="p-2 text-foreground-800 active:scale-95 transition-all disabled:opacity-30 disabled:cursor-not-allowed" disabled>
+          <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"/>
+          </svg>
+        </button>
+        <button id="playBtn" class="w-16 h-16 rounded-full bg-foreground-800 flex items-center justify-center shadow-lg active:scale-95 transition-transform">
+          <svg id="playIcon" class="w-7 h-7 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+        <button id="nextBtn" class="p-2 text-foreground-800 active:scale-95 transition-all">
+          <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M11.933 12.8a1 1 0 000-1.6L6.6 7.2A1 1 0 005 8v8a1 1 0 001.6.8l5.333-4zM19.933 12.8a1 1 0 000-1.6l-5.333-4A1 1 0 0013 8v8a1 1 0 001.6.8l5.333-4z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Article Detail Page (Secondary Page) -->
+  <div id="articlePage" class="article-page">
+    <div class="article-container">
+      <!-- Article Header with Back Button and Publisher Info -->
+      <header class="article-header sticky top-0 z-40 bg-background-100/95 backdrop-blur-lg safe-top border-b border-foreground-200">
+        <div class="px-4 py-3 flex items-center gap-3">
+          <button id="articleBackBtn" class="p-2 -ml-2 text-foreground-600 hover:text-foreground-800 active:scale-95 transition-all">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <img id="articlePublisherLogo" src="" alt="" class="w-8 h-8 rounded-lg object-contain flex-shrink-0">
+          <div class="flex-1 min-w-0">
+            <p id="articlePublisherName" class="text-sm-medium text-foreground-700 line-clamp-1"></p>
+            <p id="articleMeta" class="text-2xs text-foreground-450"></p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Article Content -->
+      <article class="article-content px-4 pb-40">
+        <!-- Article Title -->
+        <h1 id="articleTitle" class="text-xl-medium text-foreground-800 mt-6 mb-4"></h1>
+
+        <!-- Article Body -->
+        <div id="articleBody" class="article-body text-base text-foreground-700 leading-relaxed">
+          <!-- Content will be inserted by JS -->
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    // Welcome page transition
+    const welcomePage = document.getElementById('welcomePage');
+    const mainApp = document.getElementById('mainApp');
+    const startBtn = document.getElementById('startBtn');
+
+    const controlBar = document.getElementById('controlBar');
+    
+    startBtn.addEventListener('click', () => {
+      // Step 1: Fade out welcome page content
+      welcomePage.classList.add('fading');
+      
+      // Enable scrolling for main app
+      document.body.classList.remove('no-scroll');
+      
+      // Step 2: After fade out, hide welcome and show main app
+      setTimeout(() => {
+        welcomePage.classList.add('hidden');
+        
+        // Step 3: Show main app with slide-in animation
+        setTimeout(() => {
+          mainApp.classList.add('visible');
+          controlBar.classList.add('visible');
+          
+          // Scroll to top to show Now Playing card
+          setTimeout(() => {
+            const mainContent = document.querySelector('#mainApp main');
+            if (mainContent) {
+              mainContent.scrollTop = 0;
+            }
+            window.scrollTo(0, 0);
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            
+            // Auto-play first episode after UI is ready
+            setTimeout(() => {
+              if (window.audioController && window.playerController) {
+                window.audioController.loadEpisode(window.playerController.currentEpisode);
+                window.audioController.play();
+              }
+            }, 200);
+          }, 50);
+        }, 100);
+      }, 500);
+    });
+
+    // Add animation delays to topic tags
+    document.querySelectorAll('.topic-tag').forEach((tag, index) => {
+      tag.style.animationDelay = `${0.1 + index * 0.1}s`;
+    });
+
+    // Update current date display
+    function updateCurrentDate() {
+      const now = new Date();
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      
+      const month = months[now.getMonth()];
+      const day = now.getDate();
+      const year = now.getFullYear();
+      const weekday = days[now.getDay()];
+      
+      document.getElementById('currentDate').textContent = `${month} ${day}, ${year} • ${weekday}`;
+    }
+    updateCurrentDate();
+
+    // Close button - return to welcome page
+    document.getElementById('closeAppBtn')?.addEventListener('click', () => {
+      // Step 1: Fade out main app
+      mainApp.classList.remove('visible');
+      controlBar.classList.remove('visible');
+      
+      // Disable scrolling for welcome page
+      document.body.classList.add('no-scroll');
+      
+      // Step 2: After fade out, show welcome page
+      setTimeout(() => {
+        welcomePage.classList.remove('hidden');
+        
+        // Step 3: Fade in welcome page
+        setTimeout(() => {
+          welcomePage.classList.remove('fading');
+        }, 50);
+      }, 500);
+    });
+  </script>
+
+  <script>
+    // Player Navigation Controller
+    class PlayerController {
+      constructor() {
+        // Publisher logo mapping
+        this.publisherLogos = {
+          'ArsTechnica': 'publisher icon/ArsTechnica.png',
+          'Ars Technica': 'publisher icon/ArsTechnica.png',
+          'Reuters': 'publisher icon/Reuters.png',
+          'Bloomberg': 'publisher icon/Bloomberg.png',
+          'WSJ': 'publisher icon/WSJ.png',
+          'CNBC': 'publisher icon/CNBC.png',
+          'Forbes': 'publisher icon/Forbes.png',
+          'NPR': 'publisher icon/NPR.png',
+          'BBC': 'publisher icon/BBC.png',
+          'Guardian': 'publisher icon/Guardian.png',
+          'NYT': 'publisher icon/NYT.png',
+          'AP': 'publisher icon/AP.png',
+          'CNN': 'publisher icon/CNN.png',
+          'Politico': 'publisher icon/Politico.png',
+          'Vox': 'publisher icon/Vox.png',
+          'Time': 'publisher icon/Time.png',
+          'Insider': 'publisher icon/Insider.png',
+          'Business Insider': 'publisher icon/Business Insider.png',
+          'USA Today': 'publisher icon/USA Today.png',
+          'Washington Post': 'publisher icon/Washington Post.png',
+          'ABC': 'publisher icon/ABC.png',
+          'NBC News': 'publisher icon/NBC News.png',
+          'Fox News': 'publisher icon/Fox news.png',
+          'IGN': 'publisher icon/IGN.png',
+          'Wired': 'publisher icon/Ramdom1.png',
+          'The Verge': 'publisher icon/Ramdom2.png',
+          'Newsweek': 'publisher icon/Newsweek.png',
+          'The Hill': 'publisher icon/The Hill.png',
+          'UPI News': 'publisher icon/UPI News.png',
+          'YouTube': 'publisher icon/YouTube.png',
+          // Sports media
+          'ESPN': 'publisher icon/Ramdom3.png',
+          'Fox Sports': 'publisher icon/Fox news.png',
+          'NBC Sports': 'publisher icon/NBC News.png',
+          'CBS Sports': 'publisher icon/Ramdom1.png',
+          'Yahoo Sports': 'publisher icon/Ramdom2.png',
+          // Additional
+          'Washington Examiner': 'publisher icon/Washington Examiner.png',
+          'tweaktown': 'publisher icon/tweaktown.png'
+        };
+
+        // Current episode data - uses first item from external data
+        this.currentEpisode = {
+          ...PODCAST_PLAYLIST[0],
+          thumbnail: PODCAST_PLAYLIST[0].image
+        };
+
+        // Completed episodes stack
+        this.completedEpisodes = [];
+
+        // Elements
+        this.playerContent = document.getElementById('playerContent');
+        this.playerTitle = document.getElementById('playerTitle');
+        this.playerDuration = document.getElementById('playerDuration');
+        this.playerCategory = document.getElementById('playerCategory');
+        this.playerThumbnail = document.getElementById('playerThumbnail');
+        this.playerSources = document.getElementById('playerSources');
+        this.completedSection = document.getElementById('completedSection');
+        this.completedList = document.getElementById('completedList');
+        this.prevBtn = document.getElementById('prevBtn');
+        this.nextBtn = document.getElementById('nextBtn');
+        this.feedList = document.getElementById('feedList');
+
+        this.bindEvents();
+        this.initializePlayer();
+      }
+
+      initializePlayer() {
+        // Initialize player UI from external data
+        const episode = PODCAST_PLAYLIST[0];
+        this.playerTitle.textContent = episode.title;
+        this.playerDuration.textContent = episode.duration;
+        this.playerCategory.textContent = episode.category;
+        
+        // Update thumbnail
+        const thumbnailDiv = this.playerThumbnail;
+        thumbnailDiv.className = `flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-gradient-to-br ${episode.gradient} overflow-hidden shadow-sm`;
+        thumbnailDiv.innerHTML = `<img src="${episode.image}" alt="${episode.category}" class="w-full h-full object-cover opacity-90">`;
+        
+        // Update mini player in control bar
+        this.updateMiniPlayer(episode);
+        
+        // Update total time in control bar
+        const totalTimeEl = document.getElementById('totalTime');
+        if (totalTimeEl) totalTimeEl.textContent = episode.duration;
+        
+        // Update sources section
+        this.updateSourcesUI(episode);
+      }
+      
+      updateMiniPlayer(episode) {
+        const miniThumbnail = document.getElementById('miniThumbnail');
+        const miniTitle = document.getElementById('miniTitle');
+        const miniCategory = document.getElementById('miniCategory');
+        
+        if (miniThumbnail) {
+          miniThumbnail.className = `w-10 h-10 rounded-lg bg-gradient-to-br ${episode.gradient} overflow-hidden flex-shrink-0 shadow-sm`;
+          miniThumbnail.innerHTML = `<img src="${episode.thumbnail || episode.image}" alt="" class="w-full h-full object-cover">`;
+        }
+        if (miniTitle) miniTitle.textContent = episode.title;
+        if (miniCategory) miniCategory.textContent = `${episode.category} • ${episode.duration}`;
+      }
+
+      updateSourcesUI(episode) {
+        const sourceCount = episode.sources || 0;
+        const detailedSources = episode.detailedSources || [];
+        
+        let sourcesHTML = `
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-sm text-foreground-600">${sourceCount} sources</span>
+          </div>
+          <div class="space-y-2">
+        `;
+        
+        // Display sources from detailedSources
+        detailedSources.slice(0, sourceCount).forEach((source, index) => {
+          const logoPath = source.logo || this.publisherLogos[source.name] || 'publisher icon/Ramdom1.png';
+          const articleData = encodeURIComponent(JSON.stringify({
+            title: source.article,
+            publisher: source.name,
+            logo: logoPath,
+            time: source.time,
+            episodeId: episode.id,
+            sourceIndex: index
+          }));
+          sourcesHTML += `
+            <div class="source-item flex items-center gap-2 p-2 rounded-xl bg-background-150" data-article="${articleData}">
+              <img src="${logoPath}" alt="${source.name}" class="w-4 h-4 rounded flex-shrink-0 object-contain">
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-foreground-700 line-clamp-1" style="font-weight: 400;">${source.article}</p>
+                <p class="text-2xs text-foreground-450">${source.name} • ${source.time}</p>
+              </div>
+              <svg class="w-3 h-3 text-foreground-800 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          `;
+        });
+        
+        sourcesHTML += '</div>';
+        this.playerSources.innerHTML = sourcesHTML;
+        
+        // Add click handlers for source items
+        this.playerSources.querySelectorAll('.source-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const articleData = JSON.parse(decodeURIComponent(item.dataset.article));
+            if (window.articleController) {
+              window.articleController.openArticle(articleData);
+            }
+          });
+        });
+      }
+
+      bindEvents() {
+        this.prevBtn.addEventListener('click', () => this.playPrevious());
+        this.nextBtn.addEventListener('click', () => this.playNext());
+      }
+
+      getNextFromFeed() {
+        const feedItem = this.feedList.querySelector('.feed-item');
+        if (!feedItem) return null;
+
+        // Try to find the episode in PODCAST_PLAYLIST by ID
+        const episodeId = parseInt(feedItem.dataset.id);
+        const playlistEpisode = PODCAST_PLAYLIST.find(ep => ep.id === episodeId);
+        
+        if (playlistEpisode) {
+          // Return full data from playlist including detailedSources
+          return {
+            ...playlistEpisode,
+            thumbnail: playlistEpisode.image,
+            element: feedItem
+          };
+        }
+
+        // Fallback to extracting from DOM if not found in playlist
+        const article = feedItem.querySelector('article');
+        const title = article.querySelector('h4')?.textContent || '';
+        const category = article.querySelector('.text-2xs')?.textContent || '';
+        const spans = article.querySelectorAll('.flex.items-center.gap-2 span');
+        let duration = '5:00';
+        // Find duration (format like "5:18")
+        spans.forEach(span => {
+          if (/^\d+:\d+$/.test(span.textContent)) {
+            duration = span.textContent;
+          }
+        });
+        const img = article.querySelector('img');
+        const thumbnail = img?.src || '';
+        const gradientDiv = article.querySelector('.rounded-xl');
+        const gradientClass = gradientDiv?.className.match(/from-\w+-\d+\s+to-\w+-\d+/)?.[0] || 'from-gray-400 to-gray-600';
+        const sources = parseInt(feedItem.dataset.sources) || 0;
+        const sourceNames = feedItem.dataset.sourceNames || '';
+
+        return {
+          id: Date.now(),
+          title,
+          duration,
+          category,
+          thumbnail,
+          gradient: gradientClass,
+          sources,
+          sourceNames,
+          detailedSources: [],
+          element: feedItem
+        };
+      }
+
+      playNext() {
+        const nextEpisode = this.getNextFromFeed();
+        if (!nextEpisode) return;
+
+        // Add current to completed
+        this.addToCompleted(this.currentEpisode);
+
+        // Remove from feed with fade out animation
+        const feedItem = nextEpisode.element;
+        feedItem.style.transition = 'opacity 0.25s ease, max-height 0.3s ease, margin 0.3s ease, padding 0.3s ease';
+        feedItem.style.opacity = '0';
+        setTimeout(() => {
+          feedItem.style.maxHeight = '0';
+          feedItem.style.marginBottom = '0';
+          feedItem.style.overflow = 'hidden';
+          setTimeout(() => feedItem.remove(), 300);
+        }, 250);
+
+        // Switch animation
+        this.playerContent.classList.add('switching');
+        
+        setTimeout(() => {
+          // Update current
+          this.currentEpisode = nextEpisode;
+          this.updatePlayer();
+          this.playerContent.classList.remove('switching');
+          
+          // Auto-play the new episode
+          if (window.audioController) {
+            window.audioController.loadEpisode(this.currentEpisode);
+            window.audioController.play();
+          }
+        }, 200);
+
+        // Update prev button state
+        this.updateButtonStates();
+      }
+
+      playPrevious() {
+        if (this.completedEpisodes.length === 0) return;
+
+        // Get last completed episode
+        const prevEpisode = this.completedEpisodes.pop();
+        
+        // Put current back to feed (at the top)
+        this.addToFeedTop(this.currentEpisode);
+
+        // Remove from completed list
+        const completedItems = this.completedList.querySelectorAll('.completed-item');
+        if (completedItems.length > 0) {
+          const lastItem = completedItems[completedItems.length - 1];
+          lastItem.style.opacity = '0';
+          lastItem.style.transform = 'translateY(-10px)';
+          setTimeout(() => lastItem.remove(), 200);
+        }
+
+        // Switch animation
+        this.playerContent.classList.add('switching');
+        
+        setTimeout(() => {
+          this.currentEpisode = prevEpisode;
+          this.updatePlayer();
+          this.playerContent.classList.remove('switching');
+          
+          // Auto-play the previous episode
+          if (window.audioController) {
+            window.audioController.loadEpisode(this.currentEpisode);
+            window.audioController.play();
+          }
+        }, 200);
+
+        // Update section visibility and button states
+        this.updateCompletedVisibility();
+        this.updateButtonStates();
+      }
+
+      addToCompleted(episode) {
+        this.completedEpisodes.push(episode);
+
+        const completedItem = document.createElement('div');
+        completedItem.className = 'completed-item flex items-center gap-3 p-2 bg-background-100 rounded-xl';
+        completedItem.innerHTML = `
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-br ${episode.gradient} overflow-hidden flex-shrink-0 opacity-70">
+            <img src="${episode.thumbnail}" alt="" class="w-full h-full object-cover">
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs text-foreground-600 line-clamp-1">${episode.title}</p>
+          </div>
+          <span class="completed-badge">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          </span>
+        `;
+
+        // Add click handler to play this episode again
+        completedItem.addEventListener('click', () => this.playFromCompleted(episode, completedItem));
+
+        this.completedList.appendChild(completedItem);
+        this.updateCompletedVisibility();
+      }
+
+      addToFeedTop(episode) {
+        const feedItem = document.createElement('div');
+        feedItem.className = 'feed-item swipe-container';
+        feedItem.dataset.id = episode.id;
+        feedItem.dataset.sources = episode.sources || 0;
+        feedItem.dataset.sourceNames = episode.sourceNames || '';
+        feedItem.innerHTML = `
+          <div class="swipe-delete-bg">
+            <div class="swipe-hint">
+              <span>Not interested</span>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </div>
+          </div>
+          <article class="swipe-content flex gap-3 p-3 rounded-2xl shadow-xs">
+            <div class="flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-gradient-to-br ${episode.gradient} overflow-hidden">
+              <img src="${episode.thumbnail}" alt="" class="w-full h-full object-cover opacity-85">
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm-medium text-foreground-800 line-clamp-2 mb-1">${episode.title}</h4>
+              <div class="flex items-center gap-2 text-xs text-foreground-450">
+                <span class="px-1.5 py-0.5 rounded bg-muted-200 text-foreground-550 text-2xs">${episode.category}</span>
+                <span>${episode.duration}</span>
+                <span>•</span>
+                <span>${episode.sources || 3} sources</span>
+              </div>
+            </div>
+          </article>
+        `;
+
+        // Insert at top of feed
+        this.feedList.insertBefore(feedItem, this.feedList.firstChild);
+        
+        // Initialize swipe for this new item
+        new SwipeToDelete(feedItem);
+        
+        // Add click handler to play this episode
+        this.addFeedItemClickHandler(feedItem);
+      }
+
+      updatePlayer() {
+        this.playerTitle.textContent = this.currentEpisode.title;
+        this.playerDuration.textContent = this.currentEpisode.duration;
+        this.playerCategory.textContent = this.currentEpisode.category;
+        
+        // Update thumbnail
+        this.playerThumbnail.className = `flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-gradient-to-br ${this.currentEpisode.gradient} overflow-hidden shadow-sm`;
+        this.playerThumbnail.querySelector('img').src = this.currentEpisode.thumbnail;
+
+        // Update mini player in control bar
+        this.updateMiniPlayer(this.currentEpisode);
+
+        // Reset progress bar (update both in control bar)
+        const progressBars = document.querySelectorAll('.audio-progress');
+        progressBars.forEach(bar => {
+          bar.value = 0;
+          if (typeof updateProgressBar === 'function') {
+            updateProgressBar(bar);
+          }
+        });
+        const currentTimeEl = document.getElementById('currentTime');
+        if (currentTimeEl) currentTimeEl.textContent = '0:00';
+        const totalTimeEl = document.getElementById('totalTime');
+        if (totalTimeEl) totalTimeEl.textContent = this.currentEpisode.duration;
+
+        // Update sources section
+        this.updateSources();
+      }
+
+      updateSources() {
+        const sourceCount = this.currentEpisode.sources || 0;
+        const detailedSources = this.currentEpisode.detailedSources || [];
+        
+        let sourcesHTML = `
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-sm text-foreground-600">${sourceCount} sources</span>
+          </div>
+          <div class="space-y-2">
+        `;
+
+        // Show sources from detailedSources
+        detailedSources.slice(0, sourceCount).forEach((source, index) => {
+          const logoPath = source.logo || this.publisherLogos[source.name] || 'publisher icon/Ramdom1.png';
+          const articleData = encodeURIComponent(JSON.stringify({
+            title: source.article,
+            publisher: source.name,
+            logo: logoPath,
+            time: source.time,
+            episodeId: this.currentEpisode.id,
+            sourceIndex: index
+          }));
+          
+          sourcesHTML += `
+            <div class="source-item flex items-center gap-2 p-2 rounded-xl bg-background-150" data-article="${articleData}">
+              <img src="${logoPath}" alt="${source.name}" class="w-4 h-4 rounded flex-shrink-0 object-contain">
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-foreground-700 line-clamp-1" style="font-weight: 400;">${source.article}</p>
+                <p class="text-2xs text-foreground-450">${source.name} • ${source.time}</p>
+              </div>
+              <svg class="w-3 h-3 text-foreground-800 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          `;
+        });
+
+        sourcesHTML += '</div>';
+        this.playerSources.innerHTML = sourcesHTML;
+        
+        // Add click handlers for source items
+        this.playerSources.querySelectorAll('.source-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const articleData = JSON.parse(decodeURIComponent(item.dataset.article));
+            if (window.articleController) {
+              window.articleController.openArticle(articleData);
+            }
+          });
+        });
+      }
+
+      updateCompletedVisibility() {
+        if (this.completedEpisodes.length > 0) {
+          this.completedSection.classList.add('has-items');
+        } else {
+          this.completedSection.classList.remove('has-items');
+        }
+      }
+
+      updateButtonStates() {
+        this.prevBtn.disabled = this.completedEpisodes.length === 0;
+        this.nextBtn.disabled = !this.feedList.querySelector('.feed-item');
+      }
+
+      // Add click handler to a feed item
+      addFeedItemClickHandler(feedItem) {
+        const article = feedItem.querySelector('article');
+        if (article) {
+          article.addEventListener('click', (e) => {
+            // Don't trigger if swiping
+            if (feedItem.querySelector('.swipe-content.swiping')) return;
+            this.playFromFeed(feedItem);
+          });
+        }
+      }
+
+      // Extract episode data from a feed item element
+      extractEpisodeFromFeedItem(feedItem) {
+        // Try to find the episode in PODCAST_PLAYLIST by ID
+        const episodeId = parseInt(feedItem.dataset.id);
+        const playlistEpisode = PODCAST_PLAYLIST.find(ep => ep.id === episodeId);
+        
+        if (playlistEpisode) {
+          // Return full data from playlist including detailedSources
+          return {
+            ...playlistEpisode,
+            thumbnail: playlistEpisode.image,
+            element: feedItem
+          };
+        }
+        
+        // Fallback to extracting from DOM if not found in playlist
+        const article = feedItem.querySelector('article');
+        const title = article.querySelector('h4')?.textContent || '';
+        const category = article.querySelector('.text-2xs')?.textContent || '';
+        const spans = article.querySelectorAll('.flex.items-center.gap-2 span');
+        let duration = '5:00';
+        spans.forEach(span => {
+          if (/^\d+:\d+$/.test(span.textContent)) {
+            duration = span.textContent;
+          }
+        });
+        const img = article.querySelector('img');
+        const thumbnail = img?.src || '';
+        const gradientDiv = article.querySelector('.rounded-xl');
+        const gradientClass = gradientDiv?.className.match(/from-\w+-\d+\s+to-\w+-\d+/)?.[0] || 'from-gray-400 to-gray-600';
+        const sources = parseInt(feedItem.dataset.sources) || 0;
+        const sourceNames = feedItem.dataset.sourceNames || '';
+
+        return {
+          id: Date.now(),
+          title,
+          duration,
+          category,
+          thumbnail,
+          gradient: gradientClass,
+          sources,
+          sourceNames,
+          detailedSources: [],
+          element: feedItem
+        };
+      }
+
+      // Play a specific episode from the feed (clicked by user)
+      playFromFeed(feedItem) {
+        const episode = this.extractEpisodeFromFeedItem(feedItem);
+        if (!episode) return;
+
+        // Add current to completed
+        this.addToCompleted(this.currentEpisode);
+
+        // Remove clicked item from feed with animation
+        feedItem.style.transition = 'opacity 0.25s ease, max-height 0.3s ease, margin 0.3s ease';
+        feedItem.style.opacity = '0';
+        setTimeout(() => {
+          feedItem.style.maxHeight = '0';
+          feedItem.style.marginBottom = '0';
+          feedItem.style.overflow = 'hidden';
+          setTimeout(() => feedItem.remove(), 300);
+        }, 250);
+
+        // Switch animation
+        this.playerContent.classList.add('switching');
+        
+        setTimeout(() => {
+          this.currentEpisode = episode;
+          this.updatePlayer();
+          this.playerContent.classList.remove('switching');
+          
+          // Auto-play the selected episode
+          if (window.audioController) {
+            window.audioController.loadEpisode(this.currentEpisode);
+            window.audioController.play();
+          }
+        }, 200);
+
+        this.updateButtonStates();
+      }
+
+      // Play a specific episode from completed list (replay)
+      playFromCompleted(episode, completedItemElement) {
+        // Prevent double-clicks
+        if (completedItemElement.classList.contains('removing')) return;
+        completedItemElement.classList.add('removing');
+
+        // Remove the clicked episode from completedEpisodes array first
+        const index = this.completedEpisodes.findIndex(ep => ep.id === episode.id || ep.title === episode.title);
+        if (index !== -1) {
+          this.completedEpisodes.splice(index, 1);
+        }
+
+        // Use requestAnimationFrame for smoother animation
+        requestAnimationFrame(() => {
+          // Animate out the clicked item
+          completedItemElement.style.transition = 'opacity 0.15s ease-out, transform 0.15s ease-out';
+          completedItemElement.style.opacity = '0';
+          completedItemElement.style.transform = 'translateX(-20px)';
+          
+          // Start player switch animation simultaneously
+          this.playerContent.classList.add('switching');
+        });
+
+        // After animations complete, update state
+        setTimeout(() => {
+          // Remove element from DOM
+          completedItemElement.remove();
+          
+          // Add current episode to completed
+          this.addToCompleted(this.currentEpisode);
+          
+          // Update current episode and player
+          this.currentEpisode = episode;
+          this.updatePlayer();
+          this.playerContent.classList.remove('switching');
+          
+          // Auto-play the replayed episode
+          if (window.audioController) {
+            window.audioController.loadEpisode(this.currentEpisode);
+            window.audioController.play();
+          }
+          
+          this.updateCompletedVisibility();
+          this.updateButtonStates();
+        }, 150);
+      }
+    }
+
+    // Initialize after DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      window.playerController = new PlayerController();
+    });
+  </script>
+
+  <script>
+    // Article Detail Page Controller
+    class ArticleController {
+      constructor() {
+        this.articlePage = document.getElementById('articlePage');
+        this.articleBackBtn = document.getElementById('articleBackBtn');
+        this.articlePublisherLogo = document.getElementById('articlePublisherLogo');
+        this.articlePublisherName = document.getElementById('articlePublisherName');
+        this.articleMeta = document.getElementById('articleMeta');
+        this.articleTitle = document.getElementById('articleTitle');
+        this.articleBody = document.getElementById('articleBody');
+        
+        this.bindEvents();
+      }
+      
+      bindEvents() {
+        this.articleBackBtn.addEventListener('click', () => this.closeArticle());
+        
+        // Handle back gesture/button
+        window.addEventListener('popstate', (e) => {
+          if (this.articlePage.classList.contains('visible')) {
+            e.preventDefault();
+            this.closeArticle();
+          }
+        });
+      }
+      
+      openArticle(data) {
+        // Try to get specific article content from article-content.js
+        let articleContent = null;
+        let readTime = '5 min read';
+        
+        if (data.episodeId !== undefined && data.sourceIndex !== undefined) {
+          articleContent = getArticleContent(data.episodeId, data.sourceIndex);
+          if (articleContent) {
+            readTime = articleContent.readTime;
+          }
+        }
+        
+        // Update publisher info in header
+        this.articlePublisherLogo.src = data.logo;
+        this.articlePublisherLogo.alt = data.publisher;
+        this.articlePublisherName.textContent = data.publisher;
+        this.articleMeta.textContent = `${data.time} • ${readTime}`;
+        
+        // Update title
+        this.articleTitle.textContent = data.title;
+        
+        // Use specific content if available, otherwise generate default
+        if (articleContent) {
+          this.articleBody.innerHTML = articleContent.content;
+        } else {
+          const defaultContent = generateDefaultContent(data.title);
+          this.articleBody.innerHTML = defaultContent.content;
+        }
+        
+        // Show article page
+        this.articlePage.classList.add('visible');
+        
+        // Scroll to top
+        this.articlePage.querySelector('.article-container').scrollTop = 0;
+        
+        // Push state for back button support
+        history.pushState({ article: true }, '');
+      }
+      
+      closeArticle() {
+        this.articlePage.classList.remove('visible');
+      }
+    }
+    
+    // Initialize article controller
+    document.addEventListener('DOMContentLoaded', () => {
+      window.articleController = new ArticleController();
+    });
+  </script>
+
+  <script>
+    // Swipe to Delete Functionality
+    class SwipeToDelete {
+      constructor(container) {
+        this.container = container;
+        this.content = container.querySelector('.swipe-content');
+        this.deleteBg = container.querySelector('.swipe-delete-bg');
+        this.startX = 0;
+        this.currentX = 0;
+        this.isDragging = false;
+        this.threshold = 100; // Minimum swipe distance to trigger delete
+        this.maxSwipe = 150; // Maximum swipe distance
+        
+        this.bindEvents();
+      }
+
+      bindEvents() {
+        // Touch events
+        this.content.addEventListener('touchstart', (e) => this.handleStart(e), { passive: true });
+        this.content.addEventListener('touchmove', (e) => this.handleMove(e), { passive: false });
+        this.content.addEventListener('touchend', (e) => this.handleEnd(e));
+        
+        // Mouse events for desktop testing
+        this.content.addEventListener('mousedown', (e) => this.handleStart(e));
+        document.addEventListener('mousemove', (e) => {
+          if (this.isDragging) this.handleMove(e);
+        });
+        document.addEventListener('mouseup', (e) => {
+          if (this.isDragging) this.handleEnd(e);
+        });
+      }
+
+      handleStart(e) {
+        this.isDragging = true;
+        this.startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+        this.content.classList.add('swiping');
+      }
+
+      handleMove(e) {
+        if (!this.isDragging) return;
+        
+        const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+        const diff = this.startX - clientX;
+        
+        // Only allow left swipe (positive diff)
+        if (diff > 0) {
+          e.preventDefault && e.preventDefault();
+          this.currentX = Math.min(diff, this.maxSwipe);
+          this.content.style.transform = `translateX(-${this.currentX}px)`;
+          
+          // Show/hide delete indicator based on threshold
+          if (this.currentX >= this.threshold) {
+            this.deleteBg.classList.add('active');
+          } else {
+            this.deleteBg.classList.remove('active');
+          }
+        }
+      }
+
+      handleEnd(e) {
+        if (!this.isDragging) return;
+        
+        this.isDragging = false;
+        this.content.classList.remove('swiping');
+        
+        if (this.currentX >= this.threshold) {
+          // Delete the item
+          this.deleteItem();
+        } else {
+          // Snap back
+          this.content.style.transform = 'translateX(0)';
+          this.deleteBg.classList.remove('active');
+        }
+        
+        this.currentX = 0;
+      }
+
+      deleteItem() {
+        // Show toast notification
+        if (typeof showToast === 'function') {
+          showToast('Updating playlist');
+        }
+        
+        // Use requestAnimationFrame for smoother animation
+        requestAnimationFrame(() => {
+          // Animate out - both content and delete background simultaneously
+          this.content.classList.add('removing');
+          this.deleteBg.classList.add('hiding');
+          
+          // Wait for slide-out animation, then collapse
+          setTimeout(() => {
+            requestAnimationFrame(() => {
+              this.container.classList.add('collapsed');
+              
+              // Remove from DOM after collapse animation
+              setTimeout(() => {
+                this.container.remove();
+              }, 250);
+            });
+          }, 200);
+        });
+      }
+    }
+
+    // Swipe items are now initialized when they are rendered by InfiniteScroll
+  </script>
+
+  <script>
+    // Infinite Scroll - uses data from podcast-data.js
+    class InfiniteScroll {
+      constructor() {
+        this.feedList = document.getElementById('feedList');
+        this.loadMoreIndicator = document.getElementById('loadMoreIndicator');
+        this.mainContent = document.querySelector('main');
+        this.batchIndex = 0;
+        this.maxBatches = 3;
+        this.isLoading = false;
+        this.batchSize = 10;
+        
+        // Render initial items (index 1-10, since 0 is currently playing)
+        this.renderInitialItems();
+        this.bindEvents();
+      }
+      
+      renderInitialItems() {
+        // Get initial batch (items 1-10 from PODCAST_PLAYLIST)
+        const initialItems = PODCAST_PLAYLIST.slice(1, 11);
+        initialItems.forEach(item => {
+          const feedItem = this.createFeedItem(item);
+          this.feedList.appendChild(feedItem);
+          // Initialize swipe
+          new SwipeToDelete(feedItem);
+          // Add click handler (wait for PlayerController to be ready)
+          setTimeout(() => {
+            if (window.playerController) {
+              window.playerController.addFeedItemClickHandler(feedItem);
+            }
+          }, 100);
+        });
+      }
+      
+      getBatch(index) {
+        // Batch 0: items 11-20, Batch 1: items 21-30, Batch 2: items 31-40
+        const startIndex = 11 + (index * this.batchSize);
+        const endIndex = startIndex + this.batchSize;
+        return PODCAST_PLAYLIST.slice(startIndex, endIndex);
+      }
+      
+      bindEvents() {
+        // Use Intersection Observer for infinite scroll
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting && !this.isLoading && this.batchIndex < this.maxBatches) {
+            this.loadMore();
+          }
+        }, { threshold: 0.5 });
+        
+        observer.observe(this.loadMoreIndicator);
+      }
+      
+      loadMore() {
+        if (this.batchIndex >= this.maxBatches) {
+          this.loadMoreIndicator.innerHTML = '<span class="text-xs text-foreground-450">You are all caught up!</span>';
+          return;
+        }
+        
+        this.isLoading = true;
+        
+        // Simulate loading delay
+        setTimeout(() => {
+          const batch = this.getBatch(this.batchIndex);
+          const fragment = document.createDocumentFragment();
+          const items = [];
+          
+          batch.forEach((item) => {
+            const feedItem = this.createFeedItem(item);
+            feedItem.classList.add('loading-in');
+            fragment.appendChild(feedItem);
+            items.push(feedItem);
+          });
+          
+          // Add all items at once to minimize reflows
+          this.feedList.appendChild(fragment);
+          
+          // Force reflow, then animate in
+          requestAnimationFrame(() => {
+            items.forEach((feedItem, index) => {
+              const delay = index * 30;
+              setTimeout(() => {
+                feedItem.classList.remove('loading-in');
+                feedItem.classList.add('loaded');
+                
+                // Remove loaded class after animation to prevent transition conflicts
+                setTimeout(() => {
+                  feedItem.classList.remove('loaded');
+                }, 250);
+              }, delay);
+              
+              // Initialize swipe and click handler
+              new SwipeToDelete(feedItem);
+              if (window.playerController) {
+                window.playerController.addFeedItemClickHandler(feedItem);
+              }
+            });
+          });
+          
+          this.batchIndex++;
+          this.isLoading = false;
+          
+          if (this.batchIndex >= this.maxBatches) {
+            this.loadMoreIndicator.innerHTML = '<span class="text-xs text-foreground-450">You are all caught up!</span>';
+          }
+        }, 800);
+      }
+      
+      createFeedItem(item) {
+        const div = document.createElement('div');
+        div.className = 'feed-item swipe-container';
+        div.dataset.id = item.id;
+        div.dataset.sources = item.sources;
+        div.dataset.sourceNames = item.sourceNames;
+        div.innerHTML = `
+          <div class="swipe-delete-bg">
+            <div class="swipe-hint">
+              <span>Not interested</span>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </div>
+          </div>
+          <article class="swipe-content flex gap-3 p-3 rounded-2xl shadow-xs">
+            <div class="flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-gradient-to-br ${item.gradient} overflow-hidden">
+              <img src="${item.image}" alt="${item.category}" class="w-full h-full object-cover opacity-85">
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm-medium text-foreground-800 line-clamp-2 mb-1">${item.title}</h4>
+              <div class="flex items-center gap-2 text-xs text-foreground-450">
+                <span class="px-1.5 py-0.5 rounded bg-muted-200 text-foreground-550 text-2xs">${item.category}</span>
+                <span>${item.duration}</span>
+                <span>•</span>
+                <span>${item.sources} sources</span>
+              </div>
+            </div>
+          </article>
+        `;
+        return div;
+      }
+    }
+    
+    // Initialize infinite scroll
+    // Store infinite scroll instance globally
+    window.infiniteScroll = null;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      window.infiniteScroll = new InfiniteScroll();
+    });
+    
+    // Fix: Re-initialize infinite scroll when main app becomes visible
+    document.getElementById('startBtn')?.addEventListener('click', () => {
+      // Wait for transition to complete
+      setTimeout(() => {
+        const mainContent = document.querySelector('#mainApp main');
+        if (!mainContent) {
+          console.error('Main content not found');
+          return;
+        }
+        
+        console.log('Setting up scroll listener');
+        
+        // Use scroll event listener (more reliable)
+        mainContent.addEventListener('scroll', function handleScroll() {
+          const scrollTop = mainContent.scrollTop;
+          const scrollHeight = mainContent.scrollHeight;
+          const clientHeight = mainContent.clientHeight;
+          
+          // If we're near the bottom (within 300px)
+          if (scrollHeight - scrollTop - clientHeight < 300) {
+            if (window.infiniteScroll && !window.infiniteScroll.isLoading && window.infiniteScroll.batchIndex < window.infiniteScroll.maxBatches) {
+              console.log('Loading more content, batch:', window.infiniteScroll.batchIndex);
+              window.infiniteScroll.loadMore();
+            }
+          }
+        });
+      }, 300);
+    });
+  </script>
+
+  <script>
+    // Progress bar styling - update gradient based on value
+    function updateProgressBar(progressBar) {
+      const value = progressBar.value;
+      const max = progressBar.max || 100;
+      const percentage = (value / max) * 100;
+      progressBar.style.setProperty('--progress', percentage + '%');
+    }
+
+    // Initialize progress bars
+    document.addEventListener('DOMContentLoaded', () => {
+      const progressBars = document.querySelectorAll('.audio-progress');
+      progressBars.forEach(bar => {
+        // Initial update
+        updateProgressBar(bar);
+        
+        // Update on input
+        bar.addEventListener('input', () => updateProgressBar(bar));
+      });
+    });
+  </script>
+
+  <script>
+    // Audio Playback Controller (Real Audio with Fallback)
+    class AudioController {
+      constructor() {
+        this.isPlaying = false;
+        this.currentTime = 0; // in seconds
+        this.duration = 0; // in seconds
+        this.playInterval = null;
+        this.useRealAudio = false; // Whether current episode has real audio
+        this.audio = new Audio(); // HTML5 Audio element for real audio playback
+        
+        // Elements
+        this.playBtn = document.getElementById('playBtn');
+        this.playIcon = document.getElementById('playIcon');
+        this.progressBar = document.querySelector('.audio-progress');
+        this.currentTimeEl = document.getElementById('currentTime');
+        this.totalTimeEl = document.getElementById('totalTime');
+        
+        this.bindEvents();
+        this.bindAudioEvents();
+      }
+      
+      bindEvents() {
+        // Play/Pause button
+        this.playBtn.addEventListener('click', () => this.togglePlay());
+        
+        // Progress bar seeking
+        this.progressBar.addEventListener('input', (e) => {
+          const percentage = e.target.value / 100;
+          this.currentTime = this.duration * percentage;
+          if (this.useRealAudio) {
+            this.audio.currentTime = this.currentTime;
+          }
+          this.updateTimeDisplay();
+        });
+        
+        // Progress bar - pause while seeking, resume after
+        this.progressBar.addEventListener('mousedown', () => {
+          if (this.isPlaying) {
+            this.wasPlayingBeforeSeek = true;
+            this.pause();
+          }
+        });
+        
+        this.progressBar.addEventListener('mouseup', () => {
+          if (this.wasPlayingBeforeSeek) {
+            this.wasPlayingBeforeSeek = false;
+            this.play();
+          }
+        });
+        
+        this.progressBar.addEventListener('touchstart', () => {
+          if (this.isPlaying) {
+            this.wasPlayingBeforeSeek = true;
+            this.pause();
+          }
+        });
+        
+        this.progressBar.addEventListener('touchend', () => {
+          if (this.wasPlayingBeforeSeek) {
+            this.wasPlayingBeforeSeek = false;
+            this.play();
+          }
+        });
+      }
+      
+      // Bind HTML5 Audio events for real audio playback
+      bindAudioEvents() {
+        this.audio.addEventListener('timeupdate', () => {
+          if (this.useRealAudio && this.isPlaying) {
+            this.currentTime = this.audio.currentTime;
+            this.updateUI();
+          }
+        });
+        
+        this.audio.addEventListener('loadedmetadata', () => {
+          if (this.useRealAudio) {
+            this.duration = this.audio.duration;
+            this.updateUI();
+            // Update duration display in player UI to match actual audio length
+            this.updateDurationDisplays();
+          }
+        });
+        
+        this.audio.addEventListener('ended', () => {
+          if (this.useRealAudio) {
+            this.onEpisodeEnd();
+          }
+        });
+        
+        this.audio.addEventListener('error', (e) => {
+          console.error('Audio playback error:', e);
+          // Fallback to simulated mode if real audio fails
+          this.useRealAudio = false;
+        });
+      }
+      
+      // Update all duration displays to show actual audio length
+      updateDurationDisplays() {
+        const formattedDuration = this.formatTime(this.duration);
+        
+        // Update playerDuration (next to category in main player)
+        const playerDuration = document.getElementById('playerDuration');
+        if (playerDuration) playerDuration.textContent = formattedDuration;
+        
+        // Update mini player category text (format: "Category • Duration")
+        const miniCategory = document.getElementById('miniCategory');
+        if (miniCategory && window.playerController) {
+          const category = window.playerController.currentEpisode.category;
+          miniCategory.textContent = `${category} • ${formattedDuration}`;
+        }
+      }
+      
+      // Parse duration string "M:SS" to seconds
+      parseDuration(durationStr) {
+        const parts = durationStr.split(':');
+        const minutes = parseInt(parts[0], 10);
+        const seconds = parseInt(parts[1], 10);
+        return minutes * 60 + seconds;
+      }
+      
+      // Format seconds to "M:SS"
+      formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      }
+      
+      // Load a new episode (accepts episode object with audioSrc, or just duration string for backward compatibility)
+      loadEpisode(episodeOrDuration) {
+        this.pause();
+        this.currentTime = 0;
+        
+        // Check if we received an episode object or just a duration string
+        if (typeof episodeOrDuration === 'object' && episodeOrDuration.audioSrc) {
+          // Real audio mode
+          this.useRealAudio = true;
+          this.audio.src = episodeOrDuration.audioSrc;
+          this.audio.load();
+          this.duration = this.parseDuration(episodeOrDuration.duration);
+        } else {
+          // Simulated mode (no real audio file)
+          this.useRealAudio = false;
+          const durationStr = typeof episodeOrDuration === 'object' ? episodeOrDuration.duration : episodeOrDuration;
+          this.duration = this.parseDuration(durationStr);
+        }
+        
+        this.updateUI();
+      }
+      
+      // Start playback
+      play() {
+        if (this.isPlaying) return;
+        
+        this.isPlaying = true;
+        this.updatePlayButton();
+        
+        if (this.useRealAudio) {
+          // Real audio playback
+          this.audio.play().catch(e => {
+            console.error('Failed to play audio:', e);
+            // Fallback to simulated if play fails
+            this.useRealAudio = false;
+            this.startSimulatedPlayback();
+          });
+        } else {
+          // Simulated playback
+          this.startSimulatedPlayback();
+        }
+      }
+      
+      // Start simulated playback (for episodes without real audio)
+      startSimulatedPlayback() {
+        // Update every 100ms for smooth progress at normal speed (1x)
+        this.playInterval = setInterval(() => {
+          this.currentTime += 0.1;
+          
+          if (this.currentTime >= this.duration) {
+            this.currentTime = this.duration;
+            this.updateUI();
+            this.onEpisodeEnd();
+          } else {
+            this.updateUI();
+          }
+        }, 100);
+      }
+      
+      // Pause playback
+      pause() {
+        if (!this.isPlaying) return;
+        
+        this.isPlaying = false;
+        this.updatePlayButton();
+        
+        if (this.useRealAudio) {
+          this.audio.pause();
+        }
+        
+        if (this.playInterval) {
+          clearInterval(this.playInterval);
+          this.playInterval = null;
+        }
+      }
+      
+      // Toggle play/pause
+      togglePlay() {
+        if (this.isPlaying) {
+          this.pause();
+        } else {
+          this.play();
+        }
+      }
+      
+      // Update play button icon
+      updatePlayButton() {
+        if (this.isPlaying) {
+          // Show pause icon
+          this.playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+          this.playIcon.classList.remove('ml-0.5');
+        } else {
+          // Show play icon
+          this.playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+          this.playIcon.classList.add('ml-0.5');
+        }
+      }
+      
+      // Update progress bar and time display
+      updateUI() {
+        const percentage = this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
+        this.progressBar.value = percentage;
+        updateProgressBar(this.progressBar);
+        this.updateTimeDisplay();
+      }
+      
+      updateTimeDisplay() {
+        this.currentTimeEl.textContent = this.formatTime(this.currentTime);
+        this.totalTimeEl.textContent = this.formatTime(this.duration);
+      }
+      
+      // Called when episode ends
+      onEpisodeEnd() {
+        this.pause();
+        this.currentTime = 0;
+        
+        // Auto-play next episode (playNext already handles auto-play)
+        if (window.playerController) {
+          window.playerController.playNext();
+        }
+      }
+      
+      // Reset for new episode (called by PlayerController)
+      reset(episodeOrDuration) {
+        this.loadEpisode(episodeOrDuration);
+      }
+    }
+    
+    // Initialize audio controller
+    window.audioController = null;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      window.audioController = new AudioController();
+    });
+  </script>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <div class="toast-content">
+      <svg class="toast-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+      </svg>
+      <span id="toastMessage">Updating playlist</span>
+    </div>
+  </div>
+
+  <style>
+    .toast {
+      position: fixed;
+      bottom: 240px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+      pointer-events: none;
+    }
+    
+    .toast.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .toast-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: var(--foreground-800);
+      color: white;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .toast-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+  <script>
+    // Toast notification system
+    function showToast(message, duration = 1200) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      
+      if (toastMessage) toastMessage.textContent = message;
+      
+      toast.classList.add('visible');
+      
+      // Hide after duration
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, duration);
+    }
+  </script>
+
+</body>
+</html>
