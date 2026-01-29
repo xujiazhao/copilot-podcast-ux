@@ -413,6 +413,11 @@
 
     // Close button - return to welcome page
     document.getElementById('closeAppBtn')?.addEventListener('click', () => {
+      // Stop audio playback
+      if (window.audioController) {
+        window.audioController.pause();
+      }
+      
       // Step 1: Fade out main app
       mainApp.classList.remove('visible');
       controlBar.classList.remove('visible');
