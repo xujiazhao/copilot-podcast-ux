@@ -448,6 +448,25 @@ body::before {
   overflow: visible;
 }
 
+/* Collapsed state - show only last 3 items */
+.completed-collapsed .completed-item:nth-last-child(n+4) {
+  display: none;
+}
+
+.completed-item {
+  transition: opacity 0.25s ease;
+}
+
+#toggleCompletedBtn {
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+#toggleCompletedBtn:hover {
+  background-color: var(--muted-200);
+}
+
 .completed-badge {
   display: inline-flex;
   align-items: center;
@@ -459,18 +478,17 @@ body::before {
   color: var(--foreground-550);
 }
 
-.completed-item {
-  animation: slideIn 0.3s ease forwards;
+/* New item animation - fade in only */
+.completed-item.new-item {
+  animation: fadeIn 0.3s ease forwards;
 }
 
-@keyframes slideIn {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
