@@ -1308,9 +1308,9 @@
         this.loadMoreIndicator = document.getElementById('loadMoreIndicator');
         this.mainContent = document.querySelector('main');
         this.batchIndex = 0;
-        this.maxBatches = 3;
         this.isLoading = false;
-        this.batchSize = 10;
+        this.initialBatchSize = 8;  // 首次加载8条
+        this.batchSize = 6;         // 后续每次刷新6条
         
         // Render initial items (index 1-10, since 0 is currently playing)
         this.renderInitialItems();
@@ -1318,8 +1318,8 @@
       }
       
       renderInitialItems() {
-        // Get initial batch (items 1-10 from PODCAST_PLAYLIST)
-        const initialItems = PODCAST_PLAYLIST.slice(1, 11);
+        // Get initial batch (items 1-8 from PODCAST_PLAYLIST, since 0 is currently playing)
+        const initialItems = PODCAST_PLAYLIST.slice(1, 1 + this.initialBatchSize);
         initialItems.forEach(item => {
           const feedItem = this.createFeedItem(item);
           this.feedList.appendChild(feedItem);
@@ -1335,16 +1335,21 @@
       }
       
       getBatch(index) {
-        // Batch 0: items 11-20, Batch 1: items 21-30, Batch 2: items 31-40
-        const startIndex = 11 + (index * this.batchSize);
+        // 首次加载8条后，后续每次加载6条
+        const startIndex = 1 + this.initialBatchSize + (index * this.batchSize);
         const endIndex = startIndex + this.batchSize;
         return PODCAST_PLAYLIST.slice(startIndex, endIndex);
+      }
+      
+      hasMoreItems() {
+        const nextStartIndex = 1 + this.initialBatchSize + (this.batchIndex * this.batchSize);
+        return nextStartIndex < PODCAST_PLAYLIST.length;
       }
       
       bindEvents() {
         // Use Intersection Observer for infinite scroll
         const observer = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting && !this.isLoading && this.batchIndex < this.maxBatches) {
+          if (entries[0].isIntersecting && !this.isLoading && this.hasMoreItems()) {
             this.loadMore();
           }
         }, { threshold: 0.5 });
@@ -1353,7 +1358,7 @@
       }
       
       loadMore() {
-        if (this.batchIndex >= this.maxBatches) {
+        if (!this.hasMoreItems()) {
           this.loadMoreIndicator.innerHTML = '<span class="text-xs text-foreground-450">You are all caught up!</span>';
           return;
         }
@@ -1401,7 +1406,7 @@
           this.batchIndex++;
           this.isLoading = false;
           
-          if (this.batchIndex >= this.maxBatches) {
+          if (!this.hasMoreItems()) {
             this.loadMoreIndicator.innerHTML = '<span class="text-xs text-foreground-450">You are all caught up!</span>';
           }
         }, 800);
