@@ -307,7 +307,7 @@
           </svg>
         </button>
         <button id="playBtn" class="w-16 h-16 rounded-full bg-foreground-800 flex items-center justify-center shadow-lg active:scale-95 transition-transform">
-          <svg id="playIcon" class="w-7 h-7 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+          <svg id="playIcon" class="w-7 h-7 text-white transition-all duration-200 ease-out" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z"/>
           </svg>
         </button>
@@ -781,7 +781,7 @@
         this.completedEpisodes.push(episode);
 
         const completedItem = document.createElement('div');
-        completedItem.className = 'completed-item new-item flex items-center gap-3 p-2 bg-background-100 rounded-xl';
+        completedItem.className = 'completed-item new-item flex items-center gap-3 p-2 bg-background-100 rounded-xl shadow-sm';
         completedItem.innerHTML = `
           <div class="w-8 h-8 rounded-lg bg-gradient-to-br ${episode.gradient} overflow-hidden flex-shrink-0 opacity-70">
             <img src="${episode.thumbnail}" alt="" class="w-full h-full object-cover">
@@ -1712,13 +1712,13 @@
       // Update play button icon
       updatePlayButton() {
         if (this.isPlaying) {
-          // Show pause icon
+          // Show pause icon - centered
           this.playIcon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-          this.playIcon.classList.remove('ml-0.5');
+          this.playIcon.style.transform = 'translateX(0) scale(1)';
         } else {
-          // Show play icon
+          // Show play icon - slight offset and scaled up
           this.playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
-          this.playIcon.classList.add('ml-0.5');
+          this.playIcon.style.transform = 'translateX(0px) scale(1.2)';
         }
       }
       
