@@ -84,11 +84,11 @@
         </div>
         
         <!-- Title -->
-        <h1 class="text-3xl font-semibold text-foreground-800 mb-6">Copilot Podcast</h1>
+        <h1 class="text-3xl font-semibold text-foreground-800 mb-2">Copilot Podcast</h1>
 
         <!-- Welcome Message -->
         <div class="mb-8">
-          <p id="currentDate" class="text-foreground-450 text-base mb-2"></p>
+          <p id="currentDate" class="text-foreground-800 text-xs"></p>
         </div>
 
         <!-- Today's Topics -->
@@ -520,7 +520,7 @@
         // Update thumbnail
         const thumbnailDiv = this.playerThumbnail;
         thumbnailDiv.className = `flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-gradient-to-br ${episode.gradient} overflow-hidden shadow-sm`;
-        thumbnailDiv.innerHTML = `<img src="${episode.image}" alt="${episode.category}" class="w-full h-full object-cover opacity-90">`;
+        thumbnailDiv.innerHTML = `<img src="${episode.image}" alt="${episode.category}" class="w-full h-full object-cover">`;
         
         // Update mini player in control bar
         this.updateMiniPlayer(episode);

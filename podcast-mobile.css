@@ -250,11 +250,6 @@ body::before {
   background: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* Now Playing Card (Queue Item Style) */
-.now-playing-card {
-  /* No border */
-}
-
 /* Fixed Bottom Control Bar */
 .control-bar {
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
