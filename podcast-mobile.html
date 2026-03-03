@@ -65,7 +65,50 @@
   <link rel="stylesheet" href="podcast-mobile.css">
   <style>
     /* Any page-specific overrides can go here */
+    
+    /* Fallback for missing podcast images - SVG waveform icon */
+    .podcast-img-container {
+      position: relative;
+      background: linear-gradient(135deg, var(--accent-200, #e8d5c4), var(--accent-300, #d4b896));
+    }
+    .podcast-img-container img[src=""] {
+      display: none;
+    }
+    .podcast-img-container img:not([src=""]) {
+      position: relative;
+      z-index: 1;
+    }
+    .podcast-img-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #c08a50;
+    }
+    .podcast-img-fallback svg {
+      width: 28px;
+      height: 28px;
+      opacity: 0.4;
+    }
 
+    /* Source expand/collapse animation */
+    .source-item {
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+      max-height: 80px;
+      opacity: 1;
+    }
+    .source-item.source-collapsed {
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+    }
+    .view-all-sources svg {
+      transition: transform 0.3s ease;
+    }
   </style>
 </head>
 <body class="text-foreground-800 min-h-screen no-scroll">
@@ -95,14 +138,9 @@
         <div class="w-full max-w-sm">
           <h3 class="text-sm-medium text-foreground-600 mb-4">Here's what we will cover today</h3>
           
-          <div class="flex flex-wrap gap-2 justify-center">
-            <span class="topic-tag px-3 py-1.5 rounded-xl text-xs font-semibold" style="animation-delay: 0.1s; background-color: rgba(224, 158, 102, 0.3); color: #6B3900;">🦈 Australia Beach Alert</span>
-            <span class="topic-tag px-3 py-1.5 rounded-xl text-xs font-semibold" style="animation-delay: 0.2s; background-color: rgba(224, 158, 102, 0.3); color: #6B3900;">📈 Indian Markets Rally</span>
-            <span class="topic-tag px-3 py-1.5 rounded-xl text-xs font-semibold" style="animation-delay: 0.3s; background-color: rgba(224, 158, 102, 0.3); color: #6B3900;">🤖 AI & UK Jobs</span>
-            <span class="topic-tag px-3 py-1.5 rounded-xl text-xs font-semibold" style="animation-delay: 0.4s; background-color: rgba(224, 158, 102, 0.3); color: #6B3900;">✈️ Maine Plane Crash</span>
-            <span class="topic-tag px-3 py-1.5 rounded-xl text-xs font-semibold" style="animation-delay: 0.5s; background-color: rgba(224, 158, 102, 0.3); color: #6B3900;">🚔 Border Patrol Incident</span>
-            <span class="topic-tag px-3 py-1.5 rounded-xl text-xs font-semibold" style="animation-delay: 0.6s; background-color: rgba(224, 158, 102, 0.3); color: #6B3900;">💬 Celebrity Health Talk</span>
-            <span class="topic-tag px-3 py-1.5 rounded-xl text-xs font-semibold" style="animation-delay: 0.7s; background-color: rgba(224, 158, 102, 0.3); color: #6B3900;">📚 Classic Books Revisited</span>
+          <div id="topicTags" class="flex flex-wrap gap-2 justify-center">
+            <!-- Topics will be populated from API data -->
+            <span class="topic-tag px-3 py-1.5 rounded-xl text-xs font-semibold" style="animation-delay: 0.1s; background-color: rgba(224, 158, 102, 0.3); color: #6B3900;">Loading topics...</span>
           </div>
         </div>
       </div>
@@ -408,6 +446,29 @@
       tag.style.animationDelay = `${0.1 + index * 0.1}s`;
     });
 
+    // Populate welcome page topics from API data
+    podcastDataReady.then(() => {
+      const topicContainer = document.getElementById('topicTags');
+      if (!topicContainer || PODCAST_PLAYLIST.length === 0) return;
+      
+      // Category emoji mapping
+      const categoryEmoji = {
+        'World News': '🌍', 'News': '📰', 'Politics': '🏛️', 'Finance': '📈',
+        'Sports': '⚽', 'Entertainment': '🎬', 'Health': '🏥', 'Technology': '🤖',
+        'Lifestyle': '🌿', 'Travel': '✈️', 'Autos': '🚗', 'Culture': '📚'
+      };
+      
+      // Get first 7 topics from playlist
+      const topics = PODCAST_PLAYLIST.slice(0, 7);
+      topicContainer.innerHTML = topics.map((ep, i) => {
+        const emoji = categoryEmoji[ep.category] || '📌';
+        // Extract 2 key words from title
+        const words = ep.title.replace(/[''"",:;\-—–\$%]/g, '').split(/\s+/).filter(w => w.length > 2);
+        const shortTitle = words.slice(0, 2).join(' ');
+        return `<span class="topic-tag px-3 py-1.5 rounded-xl text-xs font-semibold" style="animation-delay: ${0.1 + i * 0.1}s; background-color: rgba(224, 158, 102, 0.3); color: #6B3900;">${emoji} ${shortTitle}</span>`;
+      }).join('');
+    });
+
     // Update current date display
     function updateCurrentDate() {
       const now = new Date();
@@ -532,8 +593,8 @@
         
         // Update thumbnail
         const thumbnailDiv = this.playerThumbnail;
-        thumbnailDiv.className = `flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-gradient-to-br ${episode.gradient} overflow-hidden shadow-sm`;
-        thumbnailDiv.innerHTML = `<img src="${episode.image}" alt="${episode.category}" class="w-full h-full object-cover">`;
+        thumbnailDiv.className = `flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-background-200 overflow-hidden shadow-sm podcast-img-container`;
+        thumbnailDiv.innerHTML = `<div class="podcast-img-fallback"><svg fill="currentColor" viewBox="0 0 512 512"><rect x="40" y="160" width="40" height="192" rx="20"/><rect x="120" y="80" width="40" height="352" rx="20"/><rect x="200" y="16" width="40" height="480" rx="20"/><rect x="280" y="112" width="40" height="288" rx="20"/><rect x="360" y="64" width="40" height="384" rx="20"/><rect x="440" y="144" width="40" height="224" rx="20"/></svg></div>${episode.image ? `<img src="${episode.image}" alt="${episode.category}" class="w-full h-full object-cover">` : ''}`;
         
         // Update mini player in control bar
         this.updateMiniPlayer(episode);
@@ -552,37 +613,43 @@
         const miniCategory = document.getElementById('miniCategory');
         
         if (miniThumbnail) {
-          miniThumbnail.className = `w-10 h-10 rounded-lg bg-gray-200 overflow-hidden flex-shrink-0 shadow-sm`;
-          miniThumbnail.innerHTML = `<img src="${episode.thumbnail || episode.image}" alt="" class="w-full h-full object-cover">`;
+          miniThumbnail.className = `w-10 h-10 rounded-lg bg-gray-200 overflow-hidden flex-shrink-0 shadow-sm podcast-img-container`;
+          const miniSrc = episode.thumbnail || episode.image;
+          miniThumbnail.innerHTML = `<div class="podcast-img-fallback"><svg fill="currentColor" viewBox="0 0 512 512"><rect x="40" y="160" width="40" height="192" rx="20"/><rect x="120" y="80" width="40" height="352" rx="20"/><rect x="200" y="16" width="40" height="480" rx="20"/><rect x="280" y="112" width="40" height="288" rx="20"/><rect x="360" y="64" width="40" height="384" rx="20"/><rect x="440" y="144" width="40" height="224" rx="20"/></svg></div>${miniSrc ? `<img src="${miniSrc}" alt="" class="w-full h-full object-cover">` : ''}`;
         }
         if (miniTitle) miniTitle.textContent = episode.title;
         if (miniCategory) miniCategory.textContent = `${episode.category} • ${episode.duration}`;
       }
 
       updateSourcesUI(episode) {
-        const sourceCount = episode.sources || 0;
-        const detailedSources = episode.detailedSources || [];
+        this._renderSources(episode.sources || 0, episode.detailedSources || [], episode.id);
+      }
+
+      _renderSources(sourceCount, detailedSources, episodeId) {
+        const maxVisible = 3;
+        const allSources = detailedSources.slice(0, sourceCount);
+        const hasMore = allSources.length > maxVisible;
         
         let sourcesHTML = `
           <div class="flex items-center gap-2 mb-3">
             <span class="text-sm text-foreground-600">${sourceCount} sources</span>
           </div>
-          <div class="space-y-2">
+          <div class="space-y-2 sources-list">
         `;
         
-        // Display sources from detailedSources
-        detailedSources.slice(0, sourceCount).forEach((source, index) => {
+        allSources.forEach((source, index) => {
           const logoPath = source.logo || this.publisherLogos[source.name] || 'publisher icon/Ramdom1.png';
           const articleData = encodeURIComponent(JSON.stringify({
             title: source.article,
             publisher: source.name,
             logo: logoPath,
             time: source.time,
-            episodeId: episode.id,
+            episodeId: episodeId,
             sourceIndex: index
           }));
+          const hiddenClass = (hasMore && index >= maxVisible) ? ' source-collapsed' : '';
           sourcesHTML += `
-            <div class="source-item flex items-center gap-2 p-2 rounded-xl bg-background-150" data-article="${articleData}">
+            <div class="source-item flex items-center gap-2 p-2 rounded-xl bg-background-150${hiddenClass}" data-article="${articleData}">
               <img src="${logoPath}" alt="${source.name}" class="w-4 h-4 rounded flex-shrink-0 object-contain">
               <div class="flex-1 min-w-0">
                 <p class="text-sm text-foreground-700 line-clamp-1" style="font-weight: 400;">${source.article}</p>
@@ -596,7 +663,42 @@
         });
         
         sourcesHTML += '</div>';
+        
+        if (hasMore) {
+          sourcesHTML += `
+            <button class="view-all-sources w-full mt-2 py-2 text-xs text-accent-550 flex items-center justify-center gap-1 rounded-xl hover:bg-background-150 transition-colors">
+              <span>View all ${sourceCount} sources</span>
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+          `;
+        }
+        
         this.playerSources.innerHTML = sourcesHTML;
+        
+        // Bind view-all toggle
+        const viewAllBtn = this.playerSources.querySelector('.view-all-sources');
+        if (viewAllBtn) {
+          viewAllBtn.addEventListener('click', () => {
+            const collapsedItems = this.playerSources.querySelectorAll('.source-item.source-collapsed');
+            if (collapsedItems.length > 0) {
+              // Expand: stagger each item
+              collapsedItems.forEach((el, i) => {
+                setTimeout(() => el.classList.remove('source-collapsed'), i * 60);
+              });
+              viewAllBtn.querySelector('span').textContent = 'Show less';
+              viewAllBtn.querySelector('svg').style.transform = 'rotate(180deg)';
+            } else {
+              // Collapse: reverse stagger
+              const allItems = Array.from(this.playerSources.querySelectorAll('.source-item'));
+              const toCollapse = allItems.filter((_, idx) => idx >= maxVisible).reverse();
+              toCollapse.forEach((el, i) => {
+                setTimeout(() => el.classList.add('source-collapsed'), i * 40);
+              });
+              viewAllBtn.querySelector('span').textContent = `View all ${sourceCount} sources`;
+              viewAllBtn.querySelector('svg').style.transform = '';
+            }
+          });
+        }
         
         // Add click handlers for source items
         this.playerSources.querySelectorAll('.source-item').forEach(item => {
@@ -676,8 +778,6 @@
         });
         const img = article.querySelector('img');
         const thumbnail = img?.src || '';
-        const gradientDiv = article.querySelector('.rounded-xl');
-        const gradientClass = gradientDiv?.className.match(/from-\w+-\d+\s+to-\w+-\d+/)?.[0] || 'from-gray-400 to-gray-600';
         const sources = parseInt(feedItem.dataset.sources) || 0;
         const sourceNames = feedItem.dataset.sourceNames || '';
 
@@ -687,7 +787,6 @@
           duration,
           category,
           thumbnail,
-          gradient: gradientClass,
           sources,
           sourceNames,
           detailedSources: [],
@@ -788,8 +887,9 @@
         const completedItem = document.createElement('div');
         completedItem.className = 'completed-item new-item flex items-center gap-3 p-2 bg-background-100 rounded-xl shadow-sm';
         completedItem.innerHTML = `
-          <div class="w-8 h-8 rounded-lg bg-gradient-to-br ${episode.gradient} overflow-hidden flex-shrink-0 opacity-70">
-            <img src="${episode.thumbnail}" alt="" class="w-full h-full object-cover">
+          <div class="w-8 h-8 rounded-lg bg-background-200 overflow-hidden flex-shrink-0 opacity-70 podcast-img-container">
+            <div class="podcast-img-fallback"><svg fill="currentColor" viewBox="0 0 512 512"><rect x="40" y="160" width="40" height="192" rx="20"/><rect x="120" y="80" width="40" height="352" rx="20"/><rect x="200" y="16" width="40" height="480" rx="20"/><rect x="280" y="112" width="40" height="288" rx="20"/><rect x="360" y="64" width="40" height="384" rx="20"/><rect x="440" y="144" width="40" height="224" rx="20"/></svg></div>
+            ${episode.thumbnail ? `<img src="${episode.thumbnail}" alt="" class="w-full h-full object-cover">` : ''}
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-xs text-foreground-600 line-clamp-1">${episode.title}</p>
@@ -819,8 +919,9 @@
             </div>
           </div>
           <article class="swipe-content flex gap-3 p-3 rounded-2xl shadow-sm">
-            <div class="flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-gradient-to-br ${episode.gradient} overflow-hidden">
-              <img src="${episode.thumbnail}" alt="" class="w-full h-full object-cover opacity-85">
+            <div class="flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-background-200 overflow-hidden podcast-img-container">
+              <div class="podcast-img-fallback"><svg fill="currentColor" viewBox="0 0 512 512"><rect x="40" y="160" width="40" height="192" rx="20"/><rect x="120" y="80" width="40" height="352" rx="20"/><rect x="200" y="16" width="40" height="480" rx="20"/><rect x="280" y="112" width="40" height="288" rx="20"/><rect x="360" y="64" width="40" height="384" rx="20"/><rect x="440" y="144" width="40" height="224" rx="20"/></svg></div>
+              ${episode.thumbnail ? `<img src="${episode.thumbnail}" alt="" class="w-full h-full object-cover opacity-85">` : ''}
             </div>
             <div class="flex-1 min-w-0">
               <h4 class="text-sm-medium text-foreground-800 line-clamp-2 mb-1">${episode.title}</h4>
@@ -850,8 +951,9 @@
         this.playerCategory.textContent = this.currentEpisode.category;
         
         // Update thumbnail
-        this.playerThumbnail.className = `flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-gradient-to-br ${this.currentEpisode.gradient} overflow-hidden shadow-sm`;
-        this.playerThumbnail.querySelector('img').src = this.currentEpisode.thumbnail;
+        this.playerThumbnail.className = `flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-background-200 overflow-hidden shadow-sm podcast-img-container`;
+        const thumbSrc = this.currentEpisode.thumbnail || this.currentEpisode.image;
+        this.playerThumbnail.innerHTML = `<div class="podcast-img-fallback"><svg fill="currentColor" viewBox="0 0 512 512"><rect x="40" y="160" width="40" height="192" rx="20"/><rect x="120" y="80" width="40" height="352" rx="20"/><rect x="200" y="16" width="40" height="480" rx="20"/><rect x="280" y="112" width="40" height="288" rx="20"/><rect x="360" y="64" width="40" height="384" rx="20"/><rect x="440" y="144" width="40" height="224" rx="20"/></svg></div>${thumbSrc ? `<img src="${thumbSrc}" alt="" class="w-full h-full object-cover">` : ''}`;
 
         // Update mini player in control bar
         this.updateMiniPlayer(this.currentEpisode);
@@ -874,54 +976,11 @@
       }
 
       updateSources() {
-        const sourceCount = this.currentEpisode.sources || 0;
-        const detailedSources = this.currentEpisode.detailedSources || [];
-        
-        let sourcesHTML = `
-          <div class="flex items-center gap-2 mb-3">
-            <span class="text-sm text-foreground-600">${sourceCount} sources</span>
-          </div>
-          <div class="space-y-2">
-        `;
-
-        // Show sources from detailedSources
-        detailedSources.slice(0, sourceCount).forEach((source, index) => {
-          const logoPath = source.logo || this.publisherLogos[source.name] || 'publisher icon/Ramdom1.png';
-          const articleData = encodeURIComponent(JSON.stringify({
-            title: source.article,
-            publisher: source.name,
-            logo: logoPath,
-            time: source.time,
-            episodeId: this.currentEpisode.id,
-            sourceIndex: index
-          }));
-          
-          sourcesHTML += `
-            <div class="source-item flex items-center gap-2 p-2 rounded-xl bg-background-150" data-article="${articleData}">
-              <img src="${logoPath}" alt="${source.name}" class="w-4 h-4 rounded flex-shrink-0 object-contain">
-              <div class="flex-1 min-w-0">
-                <p class="text-sm text-foreground-700 line-clamp-1" style="font-weight: 400;">${source.article}</p>
-                <p class="text-2xs text-foreground-450">${source.name} • ${source.time}</p>
-              </div>
-              <svg class="w-3 h-3 text-foreground-800 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </div>
-          `;
-        });
-
-        sourcesHTML += '</div>';
-        this.playerSources.innerHTML = sourcesHTML;
-        
-        // Add click handlers for source items
-        this.playerSources.querySelectorAll('.source-item').forEach(item => {
-          item.addEventListener('click', () => {
-            const articleData = JSON.parse(decodeURIComponent(item.dataset.article));
-            if (window.articleController) {
-              window.articleController.openArticle(articleData);
-            }
-          });
-        });
+        this._renderSources(
+          this.currentEpisode.sources || 0,
+          this.currentEpisode.detailedSources || [],
+          this.currentEpisode.id
+        );
       }
 
       updateCompletedVisibility() {
@@ -1003,8 +1062,6 @@
         });
         const img = article.querySelector('img');
         const thumbnail = img?.src || '';
-        const gradientDiv = article.querySelector('.rounded-xl');
-        const gradientClass = gradientDiv?.className.match(/from-\w+-\d+\s+to-\w+-\d+/)?.[0] || 'from-gray-400 to-gray-600';
         const sources = parseInt(feedItem.dataset.sources) || 0;
         const sourceNames = feedItem.dataset.sourceNames || '';
 
@@ -1014,7 +1071,6 @@
           duration,
           category,
           thumbnail,
-          gradient: gradientClass,
           sources,
           sourceNames,
           detailedSources: [],
@@ -1110,9 +1166,11 @@
       }
     }
 
-    // Initialize after DOM is ready
+    // Initialize after DOM is ready and data is loaded
     document.addEventListener('DOMContentLoaded', () => {
-      window.playerController = new PlayerController();
+      podcastDataReady.then(() => {
+        window.playerController = new PlayerController();
+      });
     });
   </script>
 
@@ -1428,8 +1486,9 @@
             </div>
           </div>
           <article class="swipe-content flex gap-3 p-3 rounded-2xl shadow-sm">
-            <div class="flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-gradient-to-br ${item.gradient} overflow-hidden">
-              <img src="${item.image}" alt="${item.category}" class="w-full h-full object-cover opacity-85">
+            <div class="flex-shrink-0 w-[70px] h-[70px] rounded-xl bg-background-200 overflow-hidden podcast-img-container">
+              <div class="podcast-img-fallback"><svg fill="currentColor" viewBox="0 0 512 512"><rect x="40" y="160" width="40" height="192" rx="20"/><rect x="120" y="80" width="40" height="352" rx="20"/><rect x="200" y="16" width="40" height="480" rx="20"/><rect x="280" y="112" width="40" height="288" rx="20"/><rect x="360" y="64" width="40" height="384" rx="20"/><rect x="440" y="144" width="40" height="224" rx="20"/></svg></div>
+              ${item.image ? `<img src="${item.image}" alt="${item.category}" class="w-full h-full object-cover opacity-85">` : ''}
             </div>
             <div class="flex-1 min-w-0">
               <h4 class="text-sm-medium text-foreground-800 line-clamp-2 mb-1">${item.title}</h4>
@@ -1451,7 +1510,10 @@
     window.infiniteScroll = null;
     
     document.addEventListener('DOMContentLoaded', () => {
-      window.infiniteScroll = new InfiniteScroll();
+      // Wait for podcast data to be loaded from API before initializing
+      podcastDataReady.then(() => {
+        window.infiniteScroll = new InfiniteScroll();
+      });
     });
     
     // Fix: Re-initialize infinite scroll when main app becomes visible
@@ -1839,6 +1901,149 @@
         toast.classList.remove('visible');
       }, duration);
     }
+  </script>
+
+  <script>
+    // Prefetch audio durations for all episodes
+    function prefetchDurations() {
+      function formatDuration(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return mins + ':' + secs.toString().padStart(2, '0');
+      }
+
+      function updateDurationInDOM(episode) {
+        // Update feed items
+        document.querySelectorAll(`.feed-item[data-id="${episode.id}"]`).forEach(feedItem => {
+          const spans = feedItem.querySelectorAll('.text-xs.text-foreground-450 span');
+          spans.forEach(span => {
+            if (span.textContent === '...' || span.textContent === '--:--') {
+              span.textContent = episode.duration;
+            }
+          });
+        });
+        // Update player if this is the current episode
+        if (window.playerController && window.playerController.currentEpisode.id === episode.id) {
+          const playerDuration = document.getElementById('playerDuration');
+          if (playerDuration && (playerDuration.textContent === '...' || playerDuration.textContent === '--:--')) {
+            playerDuration.textContent = episode.duration;
+          }
+          const miniCategory = document.getElementById('miniCategory');
+          if (miniCategory && (miniCategory.textContent.includes('...') || miniCategory.textContent.includes('--:--'))) {
+            miniCategory.textContent = episode.category + ' \u2022 ' + episode.duration;
+          }
+          const totalTime = document.getElementById('totalTime');
+          if (totalTime && (totalTime.textContent === '--:--' || totalTime.textContent === '...')) {
+            totalTime.textContent = episode.duration;
+          }
+        }
+      }
+
+      // Load one episode duration at a time (sequential) to avoid connection limits
+      let index = 0;
+      function loadNext() {
+        if (index >= PODCAST_PLAYLIST.length) return;
+        const episode = PODCAST_PLAYLIST[index];
+        index++;
+
+        if (episode.duration && episode.duration !== '...' && episode.duration !== '--:--') {
+          updateDurationInDOM(episode);
+          setTimeout(loadNext, 50);
+          return;
+        }
+
+        const audio = new Audio();
+        audio.preload = 'metadata';
+        let resolved = false;
+
+        const timer = setTimeout(() => {
+          if (resolved) return;
+          resolved = true;
+          audio.src = '';
+          // Don't mark as --:-- yet, will retry
+          setTimeout(loadNext, 100);
+        }, 15000);
+
+        audio.addEventListener('loadedmetadata', () => {
+          if (resolved) return;
+          resolved = true;
+          clearTimeout(timer);
+          if (audio.duration && isFinite(audio.duration)) {
+            episode.duration = formatDuration(audio.duration);
+            updateDurationInDOM(episode);
+          }
+          audio.src = '';
+          setTimeout(loadNext, 50);
+        });
+        audio.addEventListener('error', () => {
+          if (resolved) return;
+          resolved = true;
+          clearTimeout(timer);
+          episode.duration = '--:--';
+          audio.src = '';
+          setTimeout(loadNext, 100);
+        });
+        audio.src = episode.audioSrc;
+      }
+
+      // Run two sequential chains in parallel for faster loading
+      const halfway = Math.ceil(PODCAST_PLAYLIST.length / 2);
+      let index2 = halfway;
+      function loadNext2() {
+        if (index2 >= PODCAST_PLAYLIST.length) return;
+        const episode = PODCAST_PLAYLIST[index2];
+        index2++;
+
+        if (episode.duration && episode.duration !== '...' && episode.duration !== '--:--') {
+          updateDurationInDOM(episode);
+          setTimeout(loadNext2, 50);
+          return;
+        }
+
+        const audio = new Audio();
+        audio.preload = 'metadata';
+        let resolved = false;
+
+        const timer = setTimeout(() => {
+          if (resolved) return;
+          resolved = true;
+          audio.src = '';
+          setTimeout(loadNext2, 100);
+        }, 15000);
+
+        audio.addEventListener('loadedmetadata', () => {
+          if (resolved) return;
+          resolved = true;
+          clearTimeout(timer);
+          if (audio.duration && isFinite(audio.duration)) {
+            episode.duration = formatDuration(audio.duration);
+            updateDurationInDOM(episode);
+          }
+          audio.src = '';
+          setTimeout(loadNext2, 50);
+        });
+        audio.addEventListener('error', () => {
+          if (resolved) return;
+          resolved = true;
+          clearTimeout(timer);
+          episode.duration = '--:--';
+          audio.src = '';
+          setTimeout(loadNext2, 100);
+        });
+        audio.src = episode.audioSrc;
+      }
+
+      loadNext();
+      setTimeout(loadNext2, 200);
+    }
+
+    // Start prefetching after data and DOM are ready
+    document.addEventListener('DOMContentLoaded', () => {
+      podcastDataReady.then(() => {
+        // Slight delay to let the UI render first
+        setTimeout(prefetchDurations, 500);
+      });
+    });
   </script>
 
 </body>
