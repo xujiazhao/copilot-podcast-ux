@@ -108,13 +108,24 @@ function fetchPublisherInfo() {
         })
         .catch(() => {})
     )).then(() => {
-      // Re-render current episode sources if player is showing
-      if (window.playerController) {
-        window.playerController._renderSources(
-          window.playerController.currentEpisode.sources || 0,
-          window.playerController.currentEpisode.detailedSources || [],
-          window.playerController.currentEpisode.id
-        );
+      // Update source items in-place (no full re-render to avoid flash)
+      if (window.playerController && window.playerController.playerSources) {
+        const sourceItems = window.playerController.playerSources.querySelectorAll('.source-item');
+        const currentSources = window.playerController.currentEpisode.detailedSources || [];
+        sourceItems.forEach((el, idx) => {
+          if (idx < currentSources.length) {
+            const src = currentSources[idx];
+            const logoPath = src.logo || window.playerController.publisherLogos[src.name] || '';
+            if (logoPath) {
+              const img = el.querySelector('img');
+              if (img && img.src !== logoPath) img.src = logoPath;
+            }
+            const nameEl = el.querySelector('.text-2xs');
+            if (nameEl && src.name && src.name !== 'MSN') {
+              nameEl.textContent = src.name + ' \u2022 ' + src.time;
+            }
+          }
+        });
       }
       setTimeout(next, 50);
     });
