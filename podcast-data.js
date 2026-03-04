@@ -107,7 +107,17 @@ function fetchPublisherInfo() {
           if (logo) item.source.logo = logo;
         })
         .catch(() => {})
-    )).then(() => setTimeout(next, 50));
+    )).then(() => {
+      // Re-render current episode sources if player is showing
+      if (window.playerController) {
+        window.playerController._renderSources(
+          window.playerController.currentEpisode.sources || 0,
+          window.playerController.currentEpisode.detailedSources || [],
+          window.playerController.currentEpisode.id
+        );
+      }
+      setTimeout(next, 50);
+    });
   }
   next();
 }
